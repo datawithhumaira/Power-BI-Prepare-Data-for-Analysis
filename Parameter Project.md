@@ -125,7 +125,90 @@ Close and Apply
 Home
  └─ Close & Apply
 
+### Project 1 (Easiest) - Employee Parameter
+ DepartmentParameter
+Home
+└─ Transform Data
+Create Parameter
+Home
+└─ Manage Parameters
+  └─ New Parameter
+Open Department Table
+└─ Department Table
+Filter Department Using Parameter
+└─ EmployeeName
+
+Text Filters
+└─ Equals
+Select
+└─ DepartmentParameter
+Choose 
+└─ Parameter
+It should look like:
+DepartmentName = DepartmentParameter
+Verify Applied Steps
+Query Settings
+ └─ Applied Steps
+      ├─ Source
+      ├─ Navigation
+      └─ Filtered Rows
+Close and Apply
+Home
+ └─ Close & Apply
  
+### EmployeeIDParameter (Microsoft Learn Style)
+EmployeeIDParameter
+Whole Number
+101 
+EmployeeID = EmployeeIDParameter
+Changing 101 to 105
+
+### Use Excel as Parameter Source. (Advanced, Interview Level)
+Dynamic Reports for Multiple Values
+
+Create Excel File EmployeeFilter.xlsx
+Contents
+EmployeeID101102105
+Load Excel File
+Home
+ └─ Get Data
+      └─ Excel
+EmployeeFilter.xlsx 
+Transform Data
+Create Function
+Right click sales query
+Sales Table
+└─ Create Function
+GetEmployeeSales
+Invoke Function
+EmployeeFilter Query
+Add Column
+ └─ Invoke Custom Function
+ GetEmployeeSales
+ Expand Data
+ Click
+ ⇄
+(two arrows)
+Select
+SalesAmount
+Quantity
+SaleDate
+Result
+You now pull data for:
+101
+102
+105
+simultaneously.
+Add more IDs to Excel
+101
+102
+105
+108
+110
+Refresh.
+
+Power BI automatically loads those employees.
+
 
 Parameter ✅
 Relationships ✅
