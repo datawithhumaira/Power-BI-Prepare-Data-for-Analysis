@@ -1,219 +1,545 @@
+# Power BI - Dynamic Reports with Parameters (PL-300 Notes)
 
+## Exam Focus
 
-## Departments Table
-DepartmentID,DepartmentName
-1,Sales
-2,HR
-3,Finance
-4,IT
-5,Marketing
+For the **PL-300 Exam**, Microsoft expects you to understand:
 
-## Employees Table
-EmployeeID,EmployeeName,Email,PersonalEmail,Salary,DepartmentID
-101,Ahmed Ali,ahmed@company.com,ahmed@gmail.com,12000,1
-102,Sarah Khan,sarah@company.com,sarah@gmail.com,11000,1
-103,Omar Hassan,omar@company.com,omar@gmail.com,15000,2
-104,Lina George,lina@company.com,lina@gmail.com,13000,3
-105,Mohammed Noor,mohammed@company.com,mohammed@gmail.com,16000,4
-106,Aisha Rahman,aisha@company.com,aisha@gmail.com,12500,5
-107,John Smith,john@company.com,john@gmail.com,14000,1
-108,Fatima Ali,fatima@company.com,fatima@gmail.com,11800,2
-109,David Lee,david@company.com,david@gmail.com,13500,4
-110,Mary Thomas,mary@company.com,mary@gmail.com,12200,5
+✅ What parameters are
 
-## Products Table
-ProductID,ProductName,Category
-1001,Laptop,Electronics
-1002,Keyboard,Accessories
-1003,Monitor,Electronics
-1004,Mouse,Accessories
-1005,Printer,Office Equipment
-1006,Headset,Accessories
+✅ How to create parameters
 
-##Sales Table
-SaleID,EmployeeID,DepartmentID,ProductID,Quantity,SalesAmount,SaleDate
-1,101,1,1001,2,4000,2024-01-15
-2,101,1,1002,5,500,2024-02-20
-3,102,1,1003,1,1200,2024-01-18
-4,102,1,1004,10,350,2024-03-01
-5,103,2,1005,2,800,2024-02-10
-6,104,3,1001,1,2000,2024-02-11
-7,105,4,1006,4,600,2024-03-05
-8,106,5,1002,8,800,2024-03-15
-9,107,1,1003,3,3600,2024-04-01
-10,108,2,1004,6,210,2024-04-10
-11,109,4,1005,1,400,2024-04-20
-12,110,5,1001,2,4000,2024-05-01
-13,101,1,1003,2,2400,2024-05-08
-14,102,1,1006,5,750,2024-05-12
-15,103,2,1002,10,1000,2024-05-20
-16,104,3,1004,12,420,2024-06-02
-17,105,4,1001,2,4000,2024-06-15
-18,106,5,1005,1,400,2024-06-25
-19,107,1,1002,15,1500,2024-07-01
-20,108,2,1006,3,450,2024-07-10
-21,109,4,1003,2,2400,2024-07-15
-22,110,5,1004,7,245,2024-07-20
-25,101,1,1001,1,2000,2024-08-02
-26,102,1,1005,2,800,2024-08-05
-27,105,4,1003,4,4800,2024-08-10
-28,107,1,1001,3,6000,2024-08-12
-29,109,4,1006,6,900,2024-08-15
-30,110,5,1002,10,1000,2024-08-18
+✅ How to edit parameters
 
-##Security Mapping Table
-DepartmentID,UserEmail
-1,sales.manager@company.com
-2,hr.manager@company.com
-3,finance.manager@company.com
-4,it.manager@company.com
-5,marketing.manager@company.com
+✅ How to use parameters in Power Query
 
-*This table matches your model for Row Level Security practice later.*
+✅ Common business scenarios for parameters
 
-## Relationships to Create
-Departments[DepartmentID]
-    1 ------ * Sales[DepartmentID]
+You are **NOT expected** to build complex Power Query functions or write advanced M code.
 
-Departments[DepartmentID]
-    1 ------ * Employees[DepartmentID]
+---
 
-Products[ProductID]
-    1 ------ * Sales[ProductID]
+# What is a Parameter?
 
-Employees[EmployeeID]
-    1 ------ * Sales[EmployeeID]
+A parameter is a variable that allows Power BI users or developers to change the data being imported or filtered without modifying the query itself.
 
-Departments[DepartmentID]
-    1 ------ * SecurityMapping[DepartmentID]
+### Example
 
-## DAX Measures for the Project
-Total Sales = sum('Sales Table'[SalesAmount])
-Total Quantity = SUM('Sales Table'[Quantity])
-Average Sale = AVERAGE('Sales Table'[SalesAmount])
-Total Employee = DISTINCTCOUNT('Employees Table'[EmployeeID])
+```text
+EmployeeParameter = Ahmed Ali
+```
 
-## Parameter
-### Project 1 (Easiest) - Employee Parameter
-Open Power Query
+Result:
+
+```text
+Only Ahmed Ali's data loads
+```
+
+Change parameter:
+
+```text
+EmployeeParameter = Sarah Khan
+```
+
+Result:
+
+```text
+Only Sarah Khan's data loads
+```
+
+---
+
+# Benefits of Parameters
+
+| Benefit | Description |
+|----------|------------|
+| Dynamic Reports | Change report output without rebuilding |
+| Reusability | One report serves multiple purposes |
+| Easier Maintenance | Fewer reports to create |
+| Environment Switching | Switch between Dev, Test, and Production |
+| Flexible Data Sources | Change file paths and database connections |
+
+---
+
+# Parameter Types
+
+Common parameter types:
+
+```text
+Text
+Decimal Number
+Date
+Date/Time
+True/False
+Any
+```
+
+---
+
+# Where to Create Parameters
+
+```text
 Home
-└─ Transform Data
-Create Parameter
-Home
-└─ Manage Parameters
-  └─ New Parameter
-Open Employees Table
-└─ Employees Table
-Filter EmployeeName Using Parameter
-└─ EmployeeName
+ └── Transform Data
+      └── Manage Parameters
+           └── New Parameter
+```
 
-Text Filters
-└─ Equals
-Select
-└─ EmployeeParameter
-Choose 
-└─ Parameter
-It should look like:
+---
+
+# Project 1 - Employee Parameter
+
+## Parameter Settings
+
+```text
+Name: EmployeeParameter
+Type: Text
+Current Value: Ahmed Ali
+```
+
+---
+
+## Apply Filter
+
+Filter:
+
+```text
+Employees Table
+    └── EmployeeName
+```
+
+Condition:
+
+```text
 EmployeeName = EmployeeParameter
-Verify Applied Steps
-Query Settings
- └─ Applied Steps
-      ├─ Source
-      ├─ Navigation
-      └─ Filtered Rows
-Close and Apply
-Home
- └─ Close & Apply
+```
 
-### Project 1 (Easiest) - Employee Parameter
- DepartmentParameter
-Home
-└─ Transform Data
-Create Parameter
-Home
-└─ Manage Parameters
-  └─ New Parameter
-Open Department Table
-└─ Department Table
-Filter Department Using Parameter
-└─ EmployeeName
+---
 
-Text Filters
-└─ Equals
-Select
-└─ DepartmentParameter
-Choose 
-└─ Parameter
-It should look like:
+## Result
+
+Change:
+
+```text
+Ahmed Ali
+```
+
+to
+
+```text
+Sarah Khan
+```
+
+and refresh.
+
+Report shows Sarah's records.
+
+---
+
+# Project 2 - Department Parameter
+
+## Parameter Settings
+
+```text
+Name: DepartmentParameter
+Type: Text
+Current Value: Sales
+```
+
+---
+
+## Apply Filter
+
+Filter:
+
+```text
+DepartmentName
+```
+
+Condition:
+
+```text
 DepartmentName = DepartmentParameter
-Verify Applied Steps
-Query Settings
- └─ Applied Steps
-      ├─ Source
-      ├─ Navigation
-      └─ Filtered Rows
-Close and Apply
-Home
- └─ Close & Apply
- 
-### EmployeeIDParameter (Microsoft Learn Style)
-EmployeeIDParameter
-Whole Number
-101 
-EmployeeID = EmployeeIDParameter
-Changing 101 to 105
+```
 
-### Use Excel as Parameter Source. (Advanced, Interview Level)
-Dynamic Reports for Multiple Values
+---
 
-Create Excel File EmployeeFilter.xlsx
-Contents
-EmployeeID101102105
-Load Excel File
-Home
- └─ Get Data
-      └─ Excel
-EmployeeFilter.xlsx 
-Transform Data
-Create Function
-Right click sales query
+## Example
+
+Current Parameter:
+
+```text
+Sales
+```
+
+Returns:
+
+```text
+Sales Department Data
+```
+
+Change to:
+
+```text
+IT
+```
+
+Returns:
+
+```text
+IT Department Data
+```
+
+---
+
+# Project 3 - EmployeeID Parameter
+
+## Parameter Settings
+
+```text
+Name: EmployeeIDParameter
+Type: Decimal Number
+Current Value: 101
+```
+
+---
+
+## Apply Filter
+
+Filter:
+
+```text
 Sales Table
-└─ Create Function
-GetEmployeeSales
-Invoke Function
-EmployeeFilter Query
-Add Column
- └─ Invoke Custom Function
- GetEmployeeSales
- Expand Data
- Click
- ⇄
-(two arrows)
-Select
-SalesAmount
-Quantity
-SaleDate
-Result
-You now pull data for:
+    └── EmployeeID
+```
+
+Condition:
+
+```text
+EmployeeID = EmployeeIDParameter
+```
+
+---
+
+## Example
+
+```text
+EmployeeIDParameter = 101
+```
+
+Returns:
+
+```text
+Employee 101 Sales
+```
+
+Change to:
+
+```text
+105
+```
+
+Returns:
+
+```text
+Employee 105 Sales
+```
+
+---
+
+# Editing Existing Parameters
+
+## Navigation
+
+```text
+Transform Data
+ └── Manage Parameters
+      └── Edit Parameters
+```
+
+---
+
+## Process
+
+```text
+Change Value
+    ↓
+OK
+    ↓
+Close & Apply
+```
+
+Report refreshes automatically.
+
+---
+
+# Common PL-300 Uses of Parameters
+
+## Change File Path
+
+Example:
+
+```text
+C:\Sales\Data.xlsx
+```
+
+can be changed to:
+
+```text
+D:\Reports\Data.xlsx
+```
+
+without editing queries.
+
+---
+
+## Change Database Server
+
+Example:
+
+```text
+DEV-SQL01
+```
+
+switch to:
+
+```text
+PROD-SQL01
+```
+
+using a parameter.
+
+---
+
+## Change Database Name
+
+Example:
+
+```text
+Sales_Dev
+```
+
+switch to:
+
+```text
+Sales_Prod
+```
+
+through a parameter.
+
+---
+
+## Filter Imported Data
+
+Example:
+
+```text
+Department = Sales
+```
+
+loads only Sales department data.
+
+---
+
+# Advanced Scenario (Microsoft Learn)
+
+## Multiple Value Parameters
+
+Instead of:
+
+```text
+EmployeeIDParameter = 101
+```
+
+Microsoft Learn demonstrates:
+
+```text
+Excel File
+       ↓
+List of Employee IDs
+       ↓
+Power Query Function
+       ↓
+Invoke Custom Function
+       ↓
+Load Multiple Employees
+```
+
+Example Excel file:
+
+| EmployeeID |
+|------------|
+| 101 |
+| 102 |
+| 105 |
+
+Result:
+
+```text
 101
 102
 105
-simultaneously.
-Add more IDs to Excel
-101
-102
-105
-108
-110
-Refresh.
+```
 
-Power BI automatically loads those employees.
+employees load simultaneously.
 
+---
 
-Parameter ✅
-Relationships ✅
-Star Schema ✅
-DAX Measures ✅
-Row-Level Security ✅
-Sales Dashboard ✅
-Filtering & Slicers ✅
+# Do You Need This for PL-300?
+
+## Required
+
+✅ Create Parameters
+
+✅ Edit Parameters
+
+✅ Use Parameters in Power Query
+
+✅ Understand Dynamic Reports
+
+✅ Understand File/Server Switching
+
+---
+
+## Nice to Know
+
+✅ Excel as Parameter Source
+
+✅ Invoke Custom Function
+
+✅ Functions in Power Query
+
+---
+
+## Not Usually Tested Deeply
+
+❌ Writing custom M functions
+
+❌ Advanced Power Query function development
+
+❌ Complex Invoke Custom Function workflows
+
+---
+
+# Best Practice for PL-300
+
+Focus on:
+
+### EmployeeParameter
+
+```text
+Text Parameter
+```
+
+### DepartmentParameter
+
+```text
+Text Parameter
+```
+
+### EmployeeIDParameter
+
+```text
+Numeric Parameter
+```
+
+These are sufficient to understand the exam objective.
+
+---
+
+# Exam Questions You Might See
+
+## Why Use Parameters?
+
+✅ Make reports dynamic
+
+✅ Reduce maintenance
+
+✅ Change data sources without editing queries
+
+✅ Support development and production environments
+
+---
+
+## Where Are Parameters Created?
+
+```text
+Transform Data
+ └── Manage Parameters
+      └── New Parameter
+```
+
+---
+
+## Can Parameters Be Used in Power Query?
+
+✅ Yes
+
+Examples:
+
+```text
+Filter Rows
+File Paths
+Server Names
+Database Names
+Database Connections
+```
+
+---
+
+# Quick Revision
+
+## Create Parameter
+
+```text
+Transform Data
+    ↓
+Manage Parameters
+    ↓
+New Parameter
+```
+
+---
+
+## Edit Parameter
+
+```text
+Transform Data
+    ↓
+Manage Parameters
+    ↓
+Edit Parameters
+```
+
+---
+
+## Common Uses
+
+```text
+Server Name
+Database Name
+File Path
+Department Filter
+Employee Filter
+```
+
+---
+
+# PL-300 Exam Cheat Sheet
+
+### P-F-S-D
+
+| Letter | Meaning |
+|----------|----------|
+| P | Parameters |
+| F | Filter Data |
+| S | Switch Data Sources |
+| D | Dynamic Reports |
+
+Remember:
+
+```text
+Parameters make reports dynamic
+by filtering data or switching data sources.
+```
+
+This is the key takeaway for the PL-300 exam.
