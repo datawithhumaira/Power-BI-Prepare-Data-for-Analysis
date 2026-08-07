@@ -543,3 +543,351 @@ by filtering data or switching data sources.
 ```
 
 This is the key takeaway for the PL-300 exam.
+---
+# Advanced Scenario: Dynamic Reports for Multiple Values
+
+## Overview
+
+The previous examples used a parameter to return data for a **single value** such as:
+
+```text
+EmployeeID = 101
+```
+
+While useful, this approach only allows one employee's data to be viewed at a time.
+
+Microsoft Learn introduces an advanced technique that allows multiple values to be passed into a report simultaneously.
+
+The solution combines:
+
+- Parameters
+- Excel Worksheets
+- Power Query Functions
+- Invoke Custom Function
+
+This enables users to retrieve data for multiple employees in a single report refresh.
+
+---
+
+# Business Scenario
+
+Instead of loading records for:
+
+```text
+EmployeeID = 101
+```
+
+the business wants sales data for:
+
+```text
+101
+102
+105
+```
+
+at the same time.
+
+To accomplish this, an Excel file is used as a dynamic list of values.
+
+---
+
+# Step 1: Create an Excel Control Table
+
+Create an Excel worksheet containing a single column.
+
+Example:
+
+| EmployeeID |
+|------------|
+| 101 |
+| 102 |
+| 105 |
+
+Save the worksheet and load it into Power BI.
+
+---
+
+# Step 2: Import the Excel File
+
+Navigation:
+
+```text
+Home
+ └── Get Data
+      └── Excel Workbook
+```
+
+Select:
+
+```text
+EmployeeFilter.xlsx
+```
+
+Then choose:
+
+```text
+Transform Data
+```
+
+---
+
+# Step 3: Prepare the Query
+
+After loading the worksheet:
+
+### Rename Column
+
+```text
+EmployeeID
+```
+
+### Change Data Type
+
+```text
+Text
+```
+
+or
+
+```text
+Number
+```
+
+depending on the parameter type.
+
+### Rename Query
+
+Example:
+
+```text
+SalesPersonID
+```
+
+or
+
+```text
+EmployeeFilter
+```
+
+---
+
+# Step 4: Create a Function
+
+A function is used to pass each Employee ID into the original query.
+
+Navigation:
+
+```text
+Right Click Query1
+     └── Create Function
+```
+
+Function Name:
+
+```text
+GetEmployeeSales
+```
+
+Result:
+
+```text
+fx GetEmployeeSales
+```
+
+appears in the Queries pane.
+
+---
+
+# Step 5: Disable Original Query
+
+To avoid confusion in the report model:
+
+```text
+Right Click Query1
+     └── Enable Load
+```
+
+Disable:
+
+```text
+Enable Load
+```
+
+This prevents the original query from appearing in report fields.
+
+---
+
+# Step 6: Invoke Custom Function
+
+Select:
+
+```text
+EmployeeFilter Query
+```
+
+Navigate to:
+
+```text
+Add Column
+ └── Invoke Custom Function
+```
+
+Choose:
+
+```text
+GetEmployeeSales
+```
+
+Power BI executes the function once for every EmployeeID in the Excel file.
+
+---
+
+# Step 7: Expand Returned Data
+
+After the function runs, a new column appears.
+
+Example:
+
+| EmployeeID | GetEmployeeSales |
+|------------|-----------------|
+| 101 | Table |
+| 102 | Table |
+| 105 | Table |
+
+Select:
+
+```text
+Expand Column
+```
+
+(two-arrow icon)
+
+Choose fields such as:
+
+- SalesAmount
+- Quantity
+- SaleDate
+- ProductID
+
+Uncheck:
+
+```text
+Use original column name as prefix
+```
+
+---
+
+# Step 8: Refresh and Load Data
+
+Select:
+
+```text
+Home
+ └── Refresh Preview
+```
+
+Then:
+
+```text
+Close & Apply
+```
+
+The report now contains data for all Employee IDs listed in Excel.
+
+---
+
+# Adding New Employees
+
+Users can modify Excel directly.
+
+Example:
+
+Before:
+
+| EmployeeID |
+|------------|
+| 101 |
+| 102 |
+| 105 |
+
+After:
+
+| EmployeeID |
+|------------|
+| 101 |
+| 102 |
+| 105 |
+| 107 |
+| 109 |
+
+Save the Excel file.
+
+In Power BI:
+
+```text
+Refresh
+```
+
+The report automatically includes Employee 107 and Employee 109.
+
+---
+
+# Key Concepts Learned
+
+## Parameter
+
+Controls which value is passed into a query.
+
+---
+
+## Function
+
+Reusable logic that accepts a parameter and returns data.
+
+---
+
+## Invoke Custom Function
+
+Runs the function repeatedly for each value in a table.
+
+---
+
+## Excel Control Table
+
+Provides a dynamic list of values maintained by users.
+
+---
+
+# Benefits
+
+✅ Supports multiple values
+
+✅ Dynamic reporting
+
+✅ Reduced maintenance
+
+✅ User-controlled filtering
+
+✅ Scalable solution
+
+✅ Reusable Power Query logic
+
+---
+
+# PL-300 Exam Note
+
+Understanding the purpose of:
+
+- Parameters
+- Create Function
+- Invoke Custom Function
+
+is useful for PL-300.
+
+However, the exam focuses primarily on:
+
+- Creating Parameters
+- Editing Parameters
+- Applying Parameters in Power Query
+
+The full Function + Invoke Custom Function pattern is considered an advanced Power Query scenario and is less commonly tested than standard parameter usage.
